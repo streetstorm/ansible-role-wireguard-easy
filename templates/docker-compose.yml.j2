@@ -16,9 +16,21 @@ services:
     volumes:
       - {{ wireguard_path }}/config:/etc/wireguard
     ports:
-      - {{ wireguard_port }}:{{ wireguard_port }}/{{ wireguard_proto }}
-      - {{ wireguard_ui_port }}:{{ wireguard_ui_port }}/{{ wireguard_ui_proto }}
+      - {{ wireguard_port }}:51820/{{ wireguard_proto }}
+      - {{ wireguard_ui_port }}:51821/{{ wireguard_ui_proto }}
     sysctls:
       - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1
     restart: {{ wireguard_container_restart }}
+{% if wireguard_custom_network %}
+    networks:
+      - default-network
+networks:
+    default-network:
+      driver: {{ wireguard_driver_network }}
+      ipam:
+        driver: default
+        config:
+            - subnet: {{ wireguard_ipam_config_subnet }}
+              gateway: {{ wireguard_ipam_config_gateway }}
+{% endif %}

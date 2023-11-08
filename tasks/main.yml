@@ -28,15 +28,3 @@
   docker_compose:
     project_src: "{{ wireguard_path }}"
     state: "{{ wireguard_container_state }}"
-
-- name: Wireguard easy | Wait until the file peer1.conf is present before continuing
-  ansible.builtin.wait_for:
-    path: "{{ wireguard_path }}/config/peer{{ wireguard_peers }}/peer{{ wireguard_peers }}.conf"
-    timeout: 60
-
-- name: Wireguard easy | fetch client config
-  ansible.builtin.fetch:
-    src: "{{ wireguard_path }}/config/peer{{ item }}/peer{{ item }}.conf"
-    dest: "{{ playbook_dir }}/wireguard/config/{{ inventory_hostname }}/peer{{ item }}.conf"
-    flat: true
-  loop: "{{ range(1, wireguard_peers + 1) | list }}"

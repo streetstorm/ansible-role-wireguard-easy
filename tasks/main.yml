@@ -1,0 +1,42 @@
+---
+# tasks file for ansible-role-wireguard
+- name: Wireguard easy | Add standart ssh user
+  ansible.builtin.user:
+    name: "{{ wireguard_user }}"
+  register: wireguard_created_users
+
+- name: Wireguard easy | Ensure all directories exists
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: "{{ wireguard_dir_state }}"
+    mode: 0700
+    owner: "{{ wireguard_created_users.name }}"
+    group: "{{ wireguard_created_users.name }}"
+  with_items:
+    - "{{ wireguard_path }}"
+    - "{{ wireguard_path }}/config"
+
+- name: Wireguard easy | Templating docker-compose.yml
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ wireguard_path }}/docker-compose.yml"
+    owner: "{{ wireguard_created_users.name }}"
+    group: "{{ wireguard_created_users.name }}"
+    mode: 0644
+
+- name: Wireguard easy | Run Wireguard
+  docker_compose:
+    project_src: "{{ wireguard_path }}"
+    state: "{{ wireguard_container_state }}"
+
+- name: Wireguard easy | Wait until the file peer1.conf is present before continuing
+  ansible.builtin.wait_for:
+    path: "{{ wireguard_path }}/config/peer{{ wireguard_peers }}/peer{{ wireguard_peers }}.conf"
+    timeout: 60
+
+- name: Wireguard easy | fetch client config
+  ansible.builtin.fetch:
+    src: "{{ wireguard_path }}/config/peer{{ item }}/peer{{ item }}.conf"
+    dest: "{{ playbook_dir }}/wireguard/config/{{ inventory_hostname }}/peer{{ item }}.conf"
+    flat: true
+  loop: "{{ range(1, wireguard_peers + 1) | list }}"

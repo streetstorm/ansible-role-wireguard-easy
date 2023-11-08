@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  {{ wireguard_docker_name }}:
+    container_name: {{ wireguard_docker_name }}
+    image: {{ wireguard_image_name }}
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PASSWORD={{ wireguard_ui_password }}
+      - WG_HOST={{ wireguard_server_url }}
+      - WG_PORT={{ wireguard_port }}
+      - WG_ALLOWED_IPS={{ wireguard_allowedips }}
+      - WG_PERSISTENT_KEEPALIVE={{ wireguard_keepalive_seconds }}
+    volumes:
+      - {{ wireguard_path }}/config:/etc/wireguard
+    ports:
+      - {{ wireguard_port }}:{{ wireguard_port }}/{{ wireguard_proto }}
+      - {{ wireguard_ui_port }}:{{ wireguard_ui_port }}/{{ wireguard_ui_proto }}
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: {{ wireguard_container_restart }}

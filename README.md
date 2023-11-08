@@ -26,7 +26,7 @@ wireguard_ui_proto: 'tcp'
 
 wireguard_ui_password: 'Password123'
 wireguard_server_url: '0.0.0.0'
-wireguard_allowedips: "0.0.0.0/0, ::/0" # example '10.13.13.2,192.168.1.0/24,192.168.2.0/24'
+wireguard_allowedips: "0.0.0.0/0" # example '10.13.13.2,192.168.1.0/24,192.168.2.0/24'
 wireguard_keepalive_seconds: 0
 
 wireguard_container_restart: 'unless-stopped'

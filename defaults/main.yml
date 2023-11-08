@@ -1,5 +1,5 @@
 ---
-# defaults file for ansible-role-wireguard
+# defaults file for ansible-role-wireguard-easy
 wireguard_user: "wg-easy"
 wireguard_path: "/opt/wg-easy"
 

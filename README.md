@@ -18,7 +18,7 @@ wireguard_user: "wg-easy"
 wireguard_path: "/opt/wg-easy"
 
 wireguard_docker_name: "wg-easy"
-wireguard_image_name: "weejewel/wg-easy"
+wireguard_image_name: "ghcr.io/wg-easy/wg-easy"
 wireguard_port: 51820
 wireguard_proto: 'udp'
 wireguard_ui_port: 51821
